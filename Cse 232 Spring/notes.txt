@@ -1,0 +1,68 @@
+Notes for Project 11
+
+1) The most important thing to note is the usefulness of example
+21.2. That code is the core of what you need to do. You will need to
+adapt it but you can certainly start with that and be a long ways
+along. No penalty for using my code (the example).
+
+2) Can't do lower_bound/sort/copy or any STL algorithm because you can
+only move one direction on the singly-linked list. A number of
+examples in the code use a "trailer" pointer behind the main pointer
+so you have access to the Node behind, useful for a number of
+functions.
+
+3) Testing order matters. If you have an expression
+if (ptr != nullptr) && (ptr->next != key)
+then you never get a segfault. Remember that there is
+"shortcircuiting" on and/or expressions. As soon as one part of an
+&&/and is false, the execution ends. Preceeding anything with a test
+for nullptr helps prevent segfaults.
+
+4) for(auto ptr = head_; ptr != nullptr; ptr = ptr -> next) { ....}
+is a simple way to move through a single-linked list.
+
+5) Destructor test. The destructor test may fail even if your
+destructor, especially if copied from me, is correct. It is testing
+memory leaks as well. If it is just a leak, the message will look
+something like below. The bolded stuff is me, and the underling grayed
+out element is the problem. The leak is in the add function. YOu have
+to look to see what the problem is. 
+
+==28==  Block was alloc'd at
+==28==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==28==    by 0x4012F4: BiMap<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, long>::add(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, long) (in a.out)
+==28==    by 0x400FBE: fn1(BiMap<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, long>) (in a.out)
+==28==    by 0x4010CC: main (in a.out)
+==28== 
+==28== Invalid free() / delete / delete[] / realloc()
+==28==    at 0x4C2F24B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==28==    by 0x40171F: BiMap<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, long>::~BiMap() (in a.out)
+==28==    by 0x40110D: main (in a.out)
+==28==  Address 0x5abdcf0 is 0 bytes inside a block of size 48 free'd
+==28==    at 0x4C2F24B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==28==    by 0x40171F: BiMap<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, long>::~BiMap() (in a.out)
+==28==    by 0x4010FE: main (in a.out)
+==28==  Block was alloc'd at
+==28==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==28==    by 0x4012F4: BiMap<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, long>::add(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, long) (in a.out)
+==28==    by 0x400FBE: fn1(BiMap<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, long>) (in a.out)
+==28==    by 0x4010CC: main (in a.out)
+==28== 
+==28== 
+==28== HEAP SUMMARY:
+==28==     in use at exit: 72,704 bytes in 1 blocks
+==28==   total heap usage: 2,002 allocs, 4,001 frees, 172,800 bytes allocated
+==28== 
+==28== LEAK SUMMARY:
+==28==    definitely lost: 0 bytes in 0 blocks
+==28==    indirectly lost: 0 bytes in 0 blocks
+==28==      possibly lost: 0 bytes in 0 blocks
+==28==    still reachable: 72,704 bytes in 1 blocks
+==28==         suppressed: 0 bytes in 0 blocks
+==28== Reachable blocks (those to which a pointer was found) are not shown.
+==28== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==28== 
+==28== For counts of detected and suppressed errors, rerun with: -v
+==28== ERROR SUMMARY: 6000 errors from 6 contexts (suppressed: 0 from 0)
+
+Memory leak detected, test case failed. See above for details.
